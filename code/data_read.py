@@ -80,42 +80,59 @@ else:
 print("=" * 60)
 
 # ====================== 第四步：读取标签文件，筛选有效标签 ======================
-# 选第一个匹配成功的文件作为示例，读取标签并清洗
+# 定义有效标签列表
+valid_labels = ["R", "1", "2", "3"]
+# 用于存储所有文件的处理结果
+all_processed_data = []
 if matched_data:
-    # 取第一组匹配数据
-    first_match = matched_data[0]
-    eeg_file = first_match["eeg_file"]
-    label_file = first_match["label_file"]
+    # 遍历所有匹配成功的文件组，批量处理
+    for idx, match_item in enumerate(matched_data, 1):
+        eeg_file = match_item["eeg_file"]
+        label_file = match_item["label_file"]
+        match_key = match_item["match_key"]
 
-    # 读取脑电数据
-    eeg_file_path = os.path.join(data_path, eeg_file)
-    eeg_data = np.loadtxt(eeg_file_path)
-    print(f"示例脑电文件：{eeg_file}")
-    print(f"脑电数据长度（数据点数量）：{len(eeg_data)}")
+        # 读取脑电数据
+        eeg_file_path = os.path.join(data_path, eeg_file)
+        eeg_data = np.loadtxt(eeg_file_path)
 
-    # 读取标签文件（标签文件是文本格式，需按列分割）
-    label_file_path = os.path.join(data_path, label_file)
-    # 标签文件格式：开始时间 结束时间 持续时间 标签（如0 30 30 R）
-    label_data = pd.read_csv(label_file_path, sep="\s+", header=None)
-    label_data.columns = ["start_time", "end_time", "duration", "label"]
+        # 读取标签文件（标签文件是文本格式，需按列分割）
+        label_file_path = os.path.join(data_path, label_file)
+        label_data = pd.read_csv(label_file_path, sep="\s+", header=None)
+        label_data.columns = ["start_time", "end_time", "duration", "label"]
 
-    # 筛选有效标签：删除?，仅保留R/1/2/3
-    valid_labels = ["R", "1", "2", "3"]
-    clean_label_data = label_data[label_data["label"].isin(valid_labels)]
+        # 筛选有效标签：删除?，仅保留R/1/2/3
+        clean_label_data = label_data[label_data["label"].isin(valid_labels)]
 
-    # 打印标签清洗结果
-    print(f"示例标签文件：{label_file}")
-    print(f"原始标签行数：{len(label_data)}")
-    print(f"清洗后有效标签行数：{len(clean_label_data)}")
-    print("清洗后的标签示例：")
-    print(clean_label_data.head())
+        # 验证：有效标签的总时长（秒）是否和脑电数据时长匹配
+        eeg_duration = len(eeg_data) / 100  # 采样频率100Hz
+        label_total_duration = clean_label_data["duration"].sum()
 
-    # 验证：有效标签的总时长（秒）是否和脑电数据时长匹配
-    # 脑电采样频率100Hz → 时长（秒）= 数据点数量 / 100
-    eeg_duration = len(eeg_data) / 100
-    label_total_duration = clean_label_data["duration"].sum()
-    print(f"\n脑电数据时长：{eeg_duration:.1f} 秒")
-    print(f"有效标签总时长：{label_total_duration:.1f} 秒")
-    print("（若两者时长接近即匹配正常，允许少量误差）")
+        # 打印当前文件的处理结果
+        print(f"【第{idx}组】匹配键：{match_key}")
+        print(f"脑电文件：{eeg_file} | 数据点数量：{len(eeg_data)} | 时长：{eeg_duration:.1f}秒")
+        print(f"标签文件：{label_file} | 原始标签行：{len(label_data)} | 有效标签行：{len(clean_label_data)}")
+        print(
+            f"有效标签总时长：{label_total_duration:.1f}秒 | 时长偏差：{abs(eeg_duration - label_total_duration):.1f}秒")
+        print("-" * 40)
+
+        # 存储当前文件的处理结果（含原始数据和清洗后标签，后续步骤可直接调用）
+        all_processed_data.append({
+            "match_key": match_key,
+            "eeg_file": eeg_file,
+            "eeg_data": eeg_data,
+            "label_file": label_file,
+            "raw_label": label_data,
+            "clean_label": clean_label_data,
+            "eeg_duration": eeg_duration,
+            "label_total_duration": label_total_duration
+        })
+
+        # 打印批量处理总统计
+    print(f"\n批量处理完成！共处理 {len(all_processed_data)} 组有效数据-标签文件")
+else:
+    print("无匹配成功的文件，无法进行标签清洗！")
+
+
+
 
 print("\n第二步任务完成：批量读取+数据-标签匹配+标签清洗！")
