@@ -15,7 +15,7 @@ from scipy import signal
 
 # ====================== 第一步：配置路径 ======================
 # 替换为本地的Train_set路径！！！
-data_path = r"C:..\data\train_data"
+data_path = r"..\data\train_data"
 
 # ====================== 第二步：遍历文件夹，分类数据文件和标签文件 ======================
 # 存储所有文件名称
@@ -315,15 +315,15 @@ def filter_eeg_signal(eeg_data, fs=100):
 
     # 1. 50Hz陷波滤波（去除工频干扰）
     f0 = 50.0  # 要去除的工频频率
-    Q = 30.0  # 品质因数，越大滤波越窄
+    Q = 27.5 # 品质因数，越大滤波越窄
     b, a = signal.iirnotch(f0, Q, fs)
     eeg_notch = signal.filtfilt(b, a, eeg_data)  # 零相位滤波，避免信号偏移
 
     # 2. 0.5-30Hz带通滤波（保留睡眠相关脑电波）
     low = 0.5  # 低频截止
     high = 30.0  # 高频截止
-    # 调用4阶巴特沃斯带通滤波器
-    b, a = signal.butter(4, [low, high], btype='bandpass', fs=fs)
+    # 调用5阶巴特沃斯带通滤波器
+    b, a = signal.butter(5, [low, high], btype='bandpass', fs=fs)
     eeg_filtered = signal.filtfilt(b, a, eeg_notch)  # 零相位滤波
 
     return eeg_filtered
@@ -397,17 +397,17 @@ if all_processed_data:
 
         try:
             # 每5组打印一次处理进度
-            if idx % 5 == 0:
+            if idx % 20 == 0:
                 print(f"\n【第{idx}组】处理滤波+帧分割：{match_key}")
 
             # 步骤1：滤波
             filtered_eeg = filter_eeg_signal(raw_eeg)
-            if idx % 5 == 0:
+            if idx % 20 == 0:
                 print(f"✅ 滤波完成 | 原始数据长度：{len(raw_eeg)} | 滤波后长度：{len(filtered_eeg)}")
 
             # 步骤2：30秒帧分割
             frames, labels = split_eeg_into_frames(filtered_eeg, clean_label)
-            if idx % 5 == 0:
+            if idx % 20 == 0:
                 print(f"✅ 帧分割完成 | 有效帧数量：{len(frames)} | 对应标签数量：{len(labels)}")
                 if len(labels) > 0:
                     label_counts = pd.Series(labels).value_counts()
