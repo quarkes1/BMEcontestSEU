@@ -8,11 +8,11 @@
 
 ## 效果演示
 - 显示波形
-![wave](../intro_pngs/wave.png)
+![wave](intro_pngs/wave.png)
 - 查看运行日志
-![log](../intro_pngs/log.png)
+![log](intro_pngs/log.png)
 - 可视化查看分析结果
-![result](../intro_pngs/result.png)
+![result](intro_pngs/result.png)
 
 ## 手动打包方法
 ### 环境要求
