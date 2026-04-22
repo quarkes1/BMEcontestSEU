@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-electron
+out
+*.log
+.DS_Store
+Thumbs.db
+data
+*.pyc
+__pycache__
+.env
