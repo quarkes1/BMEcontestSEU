@@ -1,18 +1,11 @@
 # Sleep Stage Analysis System
 
-睡眠分期分析桌面应用 - 脑电数据处理与模型训练平台
+"生命奇点"参加第七届江苏省生医工比赛的可视化应用
+### 若欲在ide中直接运行，请使用 /code 中的代码
 
-## 功能特性
-
-- ✅ 支持大容量脑电数据上传（2-3GB）
-- ✅ 数据预处理与滤波
-- ✅ 随机森林模型训练
-- ✅ 睡眠分期预测
-- ✅ 脑电波形可视化
-- ✅ 睡眠质量分析
-
-## 安装与运行
-
+### 可以直接在release里下载installer.exe或者直接使用项目文件夹的exe（windows版本）
+### 其他os下可参照下面的指导手动打包
+## 手动打包方法
 ### 环境要求
 
 - Node.js >= 20.0.0
@@ -30,25 +23,18 @@
 pnpm install
 ```
 
-### 开发模式
-
-```bash
-pnpm dev
-```
-
 ### 构建与打包
 
 ```bash
-# 构建生产版本
 pnpm build
 
-# 打包 Windows 安装包
+# Windows 安装包
 pnpm package:win
 
-# 打包 macOS 版本
+# macOS 版本
 pnpm package:mac
 
-# 打包 Linux 版本
+#  Linux 版本
 pnpm package:linux
 ```
 
@@ -99,6 +85,3 @@ train_data/
 - **后端**: Python (scikit-learn, numpy, pandas, scipy)
 - **打包**: electron-builder
 
-## 许可证
-
-MIT
