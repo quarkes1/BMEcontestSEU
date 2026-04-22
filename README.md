@@ -5,6 +5,15 @@
 
 ### 可以直接在release里下载installer.exe或者直接使用项目文件夹的exe（windows版本）
 ### 其他os下可参照下面的指导手动打包
+
+## 效果演示
+- 显示波形
+![wave](../intro_pngs/wave.png)
+- 查看运行日志
+![log](../intro_pngs/log.png)
+- 可视化查看分析结果
+![result](../intro_pngs/result.png)
+
 ## 手动打包方法
 ### 环境要求
 
